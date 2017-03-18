@@ -56,38 +56,17 @@ void Error_Handler(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+
 /* USER CODE END 0 */
-
-struct GPIO_CTRL {
-  GPIO_TypeDef* port;
-  uint16_t pin;
-};
-
-#define MAX_LEDS 3
-#define LED_INTERVAL 100
-#define LED_MAX_STOP_TIME (2 * 1000)
-
-#define LED_ON(X) HAL_GPIO_WritePin((X).port, (X).pin, GPIO_PIN_SET)
-#define LED_OFF(X) HAL_GPIO_WritePin((X).port, (X).pin, GPIO_PIN_RESET)
-
-void blink(struct GPIO_CTRL* ctrl, int delay_time) {
-  LED_ON(*ctrl);
-  HAL_Delay(delay_time);
-  LED_OFF(*ctrl);
-}
 
 int main(void)
 {
-  int index = 0;
-  int sleep_interval = LED_INTERVAL;
 
-  struct GPIO_CTRL LEDS[MAX_LEDS] = {
-    { Blue_GPIO_Port, Blue_Pin },
-    { Green_GPIO_Port, Green_Pin },
-    { Red_GPIO_Port, Red_Pin }
-  };
+  /* USER CODE BEGIN 1 */
 
-  GPIO_PinState pin_status = GPIO_PIN_RESET;
+  /* USER CODE END 1 */
+
+  /* MCU Configuration----------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -98,19 +77,21 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
 
+  /* USER CODE BEGIN 2 */
+
+  /* USER CODE END 2 */
+
   /* Infinite loop */
-  while (1) {
-    pin_status = HAL_GPIO_ReadPin(BTN_USR_GPIO_Port, BTN_USR_Pin);
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+  /* USER CODE END WHILE */
 
-    sleep_interval = pin_status == GPIO_PIN_SET?LED_MAX_STOP_TIME:LED_INTERVAL;
+  /* USER CODE BEGIN 3 */
 
-    blink(&LEDS[index], sleep_interval);
-    ++index;
-    if (index >= MAX_LEDS) {
-      index = 0;
-    }
   }
   /* USER CODE END 3 */
+
 }
 
 /** System Clock Configuration
