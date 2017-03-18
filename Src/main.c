@@ -58,9 +58,25 @@ void Error_Handler(void);
 /* USER CODE BEGIN 0 */
 /* USER CODE END 0 */
 
+struct GPIO_CTRL {
+  GPIO_TypeDef* port;
+  uint16_t pin;
+};
+
+#define MAX_LEDS 4
+#define LED_INTERVAL 500
+#define LED_ON(X) HAL_GPIO_WritePin((X).port, (X).pin, GPIO_PIN_SET)
+#define LED_OFF(X) HAL_GPIO_WritePin((X).port, (X).pin, GPIO_PIN_RESET)
+
 int main(void)
 {
   int index = 0;
+  struct GPIO_CTRL LEDS[MAX_LEDS] = {
+    { Blue_GPIO_Port, Blue_Pin },
+    { Green_GPIO_Port, Green_Pin },
+    { Orange_GPIO_Port, Orange_Pin },
+    { Red_GPIO_Port, Red_Pin }
+  };
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
@@ -77,22 +93,13 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-  /* USER CODE BEGIN 3 */
-    HAL_GPIO_WritePin(Blue_GPIO_Port, Blue_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(Green_GPIO_Port, Green_Pin, GPIO_PIN_SET);
-    HAL_Delay(1000);
-
-    HAL_GPIO_WritePin(Green_GPIO_Port, Green_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(Orange_GPIO_Port, Orange_Pin, GPIO_PIN_SET);
-    HAL_Delay(1000);
-
-    HAL_GPIO_WritePin(Orange_GPIO_Port, Orange_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(Red_GPIO_Port, Red_Pin, GPIO_PIN_SET);
-    HAL_Delay(1000);
-
-    HAL_GPIO_WritePin(Red_GPIO_Port, Red_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(Blue_GPIO_Port, Blue_Pin, GPIO_PIN_SET);
-    HAL_Delay(1000);
+    LED_ON(LEDS[index]);
+    HAL_Delay(LED_INTERVAL);
+    LED_OFF(LEDS[index]);
+    ++index;
+    if (index >= MAX_LEDS) {
+      index = 0;
+    }
   }
   /* USER CODE END 3 */
 
