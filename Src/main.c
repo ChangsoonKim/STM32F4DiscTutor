@@ -149,7 +149,39 @@ void SystemClock_Config(void)
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
+uint16_t led_pins[] = {
+  Green_Pin,
+  Orange_Pin,
+  Red_Pin,
+  Blue_Pin
+};
+
+inline void led_control(uint8_t status) {
+  switch (status) {
+    case 4:
+      HAL_GPIO_WritePin(GPIOD, Green_Pin|Orange_Pin|Red_Pin|Blue_Pin, GPIO_PIN_RESET);
+      break;
+    default:
+      HAL_GPIO_WritePin(GPIOD, led_pins[status], GPIO_PIN_SET);
+      break;
+  }
+}
+
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+  static uint8_t cnt = 0;
+  static uint32_t last_tick = 0U;
+  uint32_t tick = HAL_GetTick();
+
+  if (tick - last_tick <= 200) return;
+
+  last_tick = tick;
+
+  if(GPIO_Pin == GPIO_PIN_0) {
+    led_control(cnt++);
+    cnt = cnt%5;
+  }
+}
 
 /* USER CODE END 4 */
 
